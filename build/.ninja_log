@@ -1,0 +1,9 @@
+# ninja log v7
+1	9	1794424908380985103	CMakeFiles/NES_Emulator.dir/src/Bus.cpp.o	a0c68227621eee4c
+1	10	1794424908379778555	CMakeFiles/NES_Emulator.dir/src/CPU.cpp.o	2bf927ddacb8cb93
+0	195	1794425067668174507	CMakeFiles/NES_Emulator.dir/src/main.cpp.o	db5b8dfbd8ade286
+196	227	1794425067864805124	NES_Emulator	6d335a5d1b1580bc
+1	194	1794425327456887276	CMakeFiles/NES_Emulator.dir/src/main.cpp.o	db5b8dfbd8ade286
+194	228	1794425327650683904	NES_Emulator	6d335a5d1b1580bc
+0	195	1794425338000663251	CMakeFiles/NES_Emulator.dir/src/main.cpp.o	db5b8dfbd8ade286
+195	227	1794425338194659317	NES_Emulator	6d335a5d1b1580bc
