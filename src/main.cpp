@@ -2,41 +2,33 @@
 #include <cassert>
 
 #include "CPU.hpp"
+#include "Bus.hpp"
 
 int main(){
-    CPU cpu;
+    Bus bus;
 
-    //check initial register values
+    //write to the first ram region
+    bus.write(0x0005, 0x42);
 
-    assert(cpu.a == 0);
-    assert(cpu.x == 0);
-    assert(cpu.y == 0);
-    assert(cpu.pc == 0);
-    assert(cpu.sp == 0);
-
-    //enable carry
-    cpu.set_flag(CPU::Flag::Carry, true);
-
-    assert(cpu.get_flag(CPU::Flag::Carry));
-    assert(!cpu.get_flag(CPU::Flag::Zero));
-
-    //Disable carry
-    cpu.set_flag(CPU::Flag::Carry, false);
-
-    assert(!cpu.get_flag(CPU::Flag::Carry));
-    assert(!cpu.get_flag(CPU::Flag::Zero));
-
-    //enable negative
-    cpu.set_flag(CPU::Flag::Negative, true);
-
-    //enable Overflow
-    cpu.set_flag(CPU::Flag::Overflow, true);
+    //all ram mirrors should return the same value
+    assert(bus.read(0x0005) == 0x42);
+    assert(bus.read(0x0805) == 0x42);
+    assert(bus.read(0x1005) == 0x42);
+    assert(bus.read(0x1805) == 0x42);
     
-    //disable negative
-    cpu.set_flag(CPU::Flag::Negative, false);
+    //write through a mirror
+    bus.write(0x1005, 0x99);
 
-    assert(cpu.get_flag(CPU::Flag::Overflow));
-    assert(!cpu.get_flag(CPU::Flag::Negative));
+    //the original address should now contain 0x99
+    assert(bus.read(0x0005) == 0x99);
 
-    std::cout << "all CPU register tests passed!\n";
+    //test the last physical RAM address
+    bus.write(0x1FFF, 0xAB);
+
+    assert(bus.read(0x07FF) == 0xAB);
+    assert(bus.read(0x0FFF) == 0xAB);
+    assert(bus.read(0x17FF) == 0xAB);
+    assert(bus.read(0x1FFF) == 0xAB);
+
+    std::cout << "All memory bus tests passed!\n";
 }
