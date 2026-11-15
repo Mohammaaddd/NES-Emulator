@@ -19,4 +19,4 @@ private:
     //actual physical RAM storage
     std::array<std::uint8_t, RAM_SIZE> ram_{};
 
-}
+};

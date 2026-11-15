@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+#include "Bus.hpp"
+
 class CPU
 {
 
@@ -26,6 +28,10 @@ public:
         Negative = 0x80
     };
 
+    explicit CPU(Bus& bus);
+
+    void step();
+
     //madify a status flag
     void set_flag(Flag flag, bool value);
 
@@ -36,5 +42,9 @@ public:
     
 private:
     std::uint8_t status_{0};
+    Bus& bus_;
+
+
+    std::uint8_t fetch_bytes();
 };
 

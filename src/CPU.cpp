@@ -1,5 +1,36 @@
  #include "CPU.hpp"
 
+ #include <stdexcept>
+
+ //public
+ CPU::CPU(Bus& bus) : bus_(bus)
+ {
+ }
+
+ void CPU::step()
+ {
+    std::uint8_t opcode = fetch_bytes();
+
+    switch(opcode)
+    {
+        case 0xA9: //load insturction
+        {
+            std::uint8_t value = fetch_bytes();
+
+            a = value;
+    
+            set_flag(Flag::Zero, a == 0);
+            set_flag(Flag::Negative, (a & 0x80) != 0);
+    
+            break;
+    
+        }
+        default:
+        throw std::runtime_error("Unknown CPU opcode");
+
+    }
+ }
+
  void CPU::set_flag(Flag flag, bool value)
  {
     //convert the flag into its numaric bit mark
@@ -24,6 +55,17 @@
 
     //check whether the selected bit is on
     return (status_ & mask) != 0;
+ }
+
+
+
+ //private
+ std::uint8_t CPU::fetch_bytes()
+ {
+    std::uint8_t value = bus_.read(pc);
+    pc++;
+
+    return value;
  }
 
  
