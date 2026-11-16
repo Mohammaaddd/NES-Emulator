@@ -25,6 +25,55 @@
             break;
     
         }
+
+        case 0xA5: //zero page LDA
+        {
+            std::uint8_t address = fetch_bytes();
+
+            a = bus_.read(address);
+
+            set_flag(Flag::Zero, a == 0);
+            set_flag(Flag::Negative, (a & 0x80) != 0);
+
+            break;
+        }
+
+        case 0xAD: //absolute LDA
+        {
+            std::uint8_t low = fetch_bytes();
+            std::uint8_t high = fetch_bytes();
+
+            std::uint16_t address = static_cast<std::uint16_t>(low) | (static_cast<std::uint16_t>(high) << 8);
+
+            a = bus_.read(address);
+
+            set_flag(Flag::Zero, a == 0);
+            set_flag(Flag::Negative, (a & 0x80) != 0);
+
+            break;
+        }
+
+        case 0x85: //STA zero page (write)
+        {
+            std::uint8_t address = fetch_bytes();
+
+            bus_.write(address, a);
+
+            break;
+        }
+
+        case 0x8D: //STA absolute (write)
+        {
+            std::uint8_t low = fetch_bytes();
+            std::uint8_t high = fetch_bytes();
+
+            std::uint16_t address = static_cast<std::uint16_t>(low) | (static_cast<std::uint16_t>(high) << 8);
+
+            bus_.write(address, a);
+            
+            break;
+        }
+
         default:
         throw std::runtime_error("Unknown CPU opcode");
 
