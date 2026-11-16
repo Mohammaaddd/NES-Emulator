@@ -33,9 +33,9 @@ int main(){
     assert(cpu.a == 0x99);
     assert(cpu.pc == 0x0002);
 
-    cpo.step();
+    cpu.step();
     assert(cpu.a == 0x55);
-    assert(cpu.pc == 0x0002);
+    assert(cpu.pc == 0x0004);
     
     cpu.step();
     assert(cpu.a == 0x77);
