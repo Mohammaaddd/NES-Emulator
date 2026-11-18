@@ -9,13 +9,13 @@
 
  void CPU::step()
  {
-    std::uint8_t opcode = fetch_bytes();
+    std::uint8_t opcode = fetch_byte();
 
     switch(opcode)
     {
         case 0xA9: //load insturction
         {
-            std::uint8_t value = fetch_bytes();
+            std::uint8_t value = fetch_byte();
 
             a = value;
     
@@ -28,51 +28,116 @@
 
         case 0xA5: //zero page LDA
         {
-            std::uint8_t address = fetch_bytes();
+            std::uint8_t address = fetch_byte();
 
             a = bus_.read(address);
 
-            set_flag(Flag::Zero, a == 0);
-            set_flag(Flag::Negative, (a & 0x80) != 0);
+            update_zero_and_negative_flags(a);
 
             break;
         }
 
         case 0xAD: //absolute LDA
         {
-            std::uint8_t low = fetch_bytes();
-            std::uint8_t high = fetch_bytes();
-
-            std::uint16_t address = static_cast<std::uint16_t>(low) | (static_cast<std::uint16_t>(high) << 8);
+            std::uint16_t address = fetch_absolute_address();
 
             a = bus_.read(address);
 
-            set_flag(Flag::Zero, a == 0);
-            set_flag(Flag::Negative, (a & 0x80) != 0);
-
+            update_zero_and_negative_flags(a);
             break;
         }
 
         case 0x85: //STA zero page (write)
         {
-            std::uint8_t address = fetch_bytes();
+            std::uint8_t address = fetch_byte();
 
             bus_.write(address, a);
 
             break;
         }
 
-        case 0x8D: //STA absolute (write)
+        case 0x8D: //STA(store accumulator) absolute (write)
         {
-            std::uint8_t low = fetch_bytes();
-            std::uint8_t high = fetch_bytes();
-
-            std::uint16_t address = static_cast<std::uint16_t>(low) | (static_cast<std::uint16_t>(high) << 8);
+            std::uint16_t address = fetch_absolute_address();
 
             bus_.write(address, a);
             
             break;
         }
+
+        case 0xA2: //LDX
+        {
+            x = fetch_byte();
+
+            update_zero_and_negative_flags(x);
+            break;
+        }
+
+        case 0xA0: //LDY
+        {
+            y = fetch_byte();
+
+            update_zero_and_negative_flags(y);
+            break;
+        }
+
+        case 0xA6: //LDX zero page
+        {
+            std::uint8_t address = fetch_zero_page_address();
+
+            x = bus_.read(address);
+
+            update_zero_and_negative_flags(x);
+            break;
+        }
+
+        case 0xAE: //LDX absolute
+        {
+            std::uint16_t address = fetch_absolute_address();
+
+            x = bus_.read(address);
+
+            update_zero_and_negative_flags(x);
+            break;
+        }
+
+        case 0xA4: //LDY zero page
+        {
+            std::uint8_t address = fetch_zero_page_address();
+
+            y = bus_.read(address);
+
+            update_zero_and_negative_flags(y);
+            break;
+        }
+
+        case 0xAC: //LDY absolute
+        {
+            std::uint16_t address = fetch_absolute_address();
+
+            y = bus_.read(address);
+
+            update_zero_and_negative_flags(y);
+
+            break;
+        }
+
+        case 0x86: //STX zero page
+        {
+            std::uint8_t address = fetch_zero_page_address();
+
+            bus_.write(address, x);
+            break;
+        }
+
+        case 0x84: //STY zero page
+        {
+            std::uint8_t address = fetch_zero_page_address();
+
+            bus_.write(address, y);
+            break;
+        }
+
 
         default:
         throw std::runtime_error("Unknown CPU opcode");
@@ -109,7 +174,7 @@
 
 
  //private
- std::uint8_t CPU::fetch_bytes()
+ std::uint8_t CPU::fetch_byte()
  {
     std::uint8_t value = bus_.read(pc);
     pc++;
@@ -117,4 +182,21 @@
     return value;
  }
 
- 
+ std::uint8_t CPU::fetch_zero_page_address()
+ {
+    return fetch_byte();
+ }
+
+ std::uint16_t CPU::fetch_absolute_address()
+ {
+    std::uint8_t low = fetch_byte();
+    std::uint8_t high = fetch_byte();
+
+    return static_cast<std::uint16_t>(low) | (static_cast<std::uint16_t>(high) << 8);
+ }
+
+ void CPU::update_zero_and_negative_flags(std::uint8_t value)
+ {
+    set_flag(Flag::Zero, value == 0);
+    set_flag(Flag::Negative, (value & 0x80) != 0);
+ }

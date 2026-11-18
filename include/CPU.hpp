@@ -45,6 +45,9 @@ private:
     Bus& bus_;
 
 
-    std::uint8_t fetch_bytes();
+    std::uint8_t fetch_byte();
+    std::uint8_t fetch_zero_page_address();
+    std::uint16_t fetch_absolute_address();
+    void update_zero_and_negative_flags(std::uint8_t value);
 };
 

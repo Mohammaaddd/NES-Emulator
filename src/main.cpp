@@ -8,42 +8,43 @@ int main(){
     Bus bus;
     CPU cpu(bus);
 
-    //LDA immediate: A = 0x99
-    bus.write(0x0000, 0xA9);
-    bus.write(0x0001, 0x99);
+    //LDX immediate: X = 0x25
+    bus.write(0x0000, 0xA2);
+    bus.write(0x0001, 0x25);
 
-    //LDA zero page: A = memory[0x0042]
-    bus.write(0x0002, 0xA5);
-    bus.write(0x0003, 0x42);
-    bus.write(0x0042, 0x55);
+    //LDY zero page: Y = memory[0x0040]
+    bus.write(0x0002, 0xA4);
+    bus.write(0x0003, 0x40);
+    bus.write(0x0040, 0x80);
 
-    //LDA absolute: A = memory[0x1234]
+    //LDA absolute A = memory[0x1234]
     bus.write(0x0004, 0xAD);
     bus.write(0x0005, 0x34);
     bus.write(0x0006, 0x12);
-    bus.write(0x1234, 0x77);
-
-    //STA zero page: memory[0x0050] = A
-    bus.write(0x0007, 0x85);
-    bus.write(0x0008, 0x50);
+    bus.write(0x1234, 0x00);
 
     cpu.pc = 0x0000;
 
+    //execute LDX
     cpu.step();
-    assert(cpu.a == 0x99);
-    assert(cpu.pc == 0x0002);
 
-    cpu.step();
-    assert(cpu.a == 0x55);
-    assert(cpu.pc == 0x0004);
-    
-    cpu.step();
-    assert(cpu.a == 0x77);
-    assert(cpu.pc == 0x0007);
+    assert(cpu.x == 0x25);
+    assert(cpu.get_flag(CPU::Flag::Zero) == false);
+    assert(cpu.get_flag(CPU::Flag::Negative) == false);
 
+    //execute LDY
     cpu.step();
-    assert(bus.read(0x0050) == 0x77);
-    assert(cpu.pc == 0x0009);
 
-    std::cout << "addressing mode tests passed";
+    assert(cpu.y == 0x80);
+    assert(cpu.get_flag(CPU::Flag::Zero) == false);
+    assert(cpu.get_flag(CPU::Flag::Negative) == true);
+
+    //execute LDA
+    cpu.step();
+
+    assert(cpu.a == 0x00);
+    assert(cpu.get_flag(CPU::Flag::Zero) == true);
+    assert(cpu.get_flag(CPU::Flag::Negative) == false);
+
+    std::cout << "registers loading tests passed";
 }
