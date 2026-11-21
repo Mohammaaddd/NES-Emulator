@@ -138,6 +138,55 @@
             break;
         }
 
+        case 0xB5: //LDA zero page, X
+        {
+            std::uint8_t base_address = fetch_zero_page_address();
+
+            std::uint8_t address = base_address + x;
+
+            a = bus_.read(address);
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
+        case 0xB9: //LDA absolute,Y
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + y;
+
+            a = bus_.read(address);
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
+        case 0x95: //STA zero page, X
+        {
+            std::uint8_t base_address = fetch_zero_page_address();
+
+            std::uint8_t address = base_address + x;
+
+            bus_.write(address, a);
+
+            break;
+        }
+
+        case 0xBD: // LDA absolute,X
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + x;
+
+            a = bus_.read(address);
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
 
         default:
         throw std::runtime_error("Unknown CPU opcode");
