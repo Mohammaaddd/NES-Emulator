@@ -188,6 +188,80 @@
             break;
         }
 
+        case 0xBE: //LDX absolute, Y
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + y;
+
+            x = bus_.read(address);
+
+            update_zero_and_negative_flags(x);
+
+            break;
+        }
+
+        case 0xBC: //LDY absolute, X
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + x;
+
+            y = bus_.read(address);
+
+            update_zero_and_negative_flags(y);
+
+            break;
+        }
+
+        case 0x9E: //STX absolute,  Y
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + y;
+
+            bus_.write(address, x);
+
+            break;
+        }
+
+        case 0x9C: //STY absolute, X
+        {
+            std::uint16_t base_address = fetch_absolute_address();
+
+            std::uint16_t address = base_address + x;
+
+            bus_.write(address, y);
+
+            break;
+        }
+
+        case 0xB6: //LDX zero page, Y
+        {
+            std::uint8_t base_address = fetch_zero_page_address();
+
+            std::uint8_t address = base_address + y;
+
+            x = bus_.read(address);
+
+            update_zero_and_negative_flags(x);
+
+            break;
+        }
+
+        case 0xB4: //LDY zero page, X
+        {
+            std::uint8_t base_address = fetch_zero_page_address();
+
+            std::uint8_t address = base_address + x;
+
+            y = bus_.read(address);
+
+            update_zero_and_negative_flags(y);
+
+            break;
+        }
+
         default:
         throw std::runtime_error("Unknown CPU opcode");
 
