@@ -262,6 +262,25 @@
             break;
         }
 
+        case 0x69: //ADC immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            const std::uint8_t old_a = a;
+
+            const std::uint16_t sum = static_cast<std::uint16_t>(a) + value + (get_flag(Flag::Carry) ? 1 : 0);
+
+            a = static_cast<std::uint8_t>(sum);
+
+            set_flag(Flag::Carry, sum > 0xFF);
+
+            set_flag(Flag::Overflow, (~(old_a ^ value) & (old_a ^ a) & 0x80) != 0);
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
         default:
         throw std::runtime_error("Unknown CPU opcode");
 
