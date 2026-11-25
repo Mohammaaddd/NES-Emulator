@@ -300,6 +300,51 @@
             break;
         }
 
+        case 0xC9: //CMP immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            const std::uint16_t result = static_cast<std::uint16_t>(a) - value;
+
+            set_flag(Flag::Carry, a >= value);
+
+            set_flag(Flag::Zero, a == value);
+
+            set_flag(Flag::Negative, (result & 0x80) != 0);
+
+            break;
+        }
+
+        case 0xE0: //CPX immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            const std::uint16_t result = static_cast<std::uint16_t>(x) - value;
+
+            set_flag(Flag::Carry, x >= value);
+
+            set_flag(Flag::Zero, x >= value);
+
+            set_flag(Flag::Negative, (result & 0x80) != 0);
+
+            break;
+        }
+
+        case 0xC0: //CPX immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            const std::uint16_t result = static_cast<std::uint16_t>(y) - value;
+
+            set_flag(Flag::Carry, y >= value);
+
+            set_flag(Flag::Zero, y >= value);
+
+            set_flag(Flag::Negative, (result & 0x80) != 0);
+
+            break;
+        }
+
         default:
         throw std::runtime_error("Unknown CPU opcode");
 
