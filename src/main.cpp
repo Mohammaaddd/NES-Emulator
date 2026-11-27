@@ -9,19 +9,18 @@ int main()
     Bus bus;
     CPU cpu(bus);
 
-    // LDA #$20
+    //LDA #$CA
     bus.write(0x0000, 0xA9);
-    bus.write(0x0001, 0x20);
+    bus.write(0x0001, 0xCA);
 
-    // CMP #$20
-    bus.write(0x0002, 0xC9);
-    bus.write(0x0003, 0x20);
+    //AND #$A6
+    bus.write(0x0002, 0x29);
+    bus.write(0x0003, 0xA6);
 
     cpu.step();
     cpu.step();
 
-    assert(cpu.a == 0x20);
-    assert(cpu.get_flag(CPU::Flag::Carry));
-    assert(cpu.get_flag(CPU::Flag::Zero));
-    assert(!cpu.get_flag(CPU::Flag::Negative));
+    assert(cpu.a == 0x82);
+    assert(!cpu.get_flag(CPU::Flag::Zero));
+    assert(cpu.get_flag(CPU::Flag::Negative));
 }

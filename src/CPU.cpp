@@ -345,6 +345,39 @@
             break;
         }
 
+        case 0x29: //AND immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            a &= value;
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
+        case 0x09: //ORA immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            a |= value;
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
+        case 0x49: //EOR immediate
+        {
+            const std::uint8_t value = fetch_byte();
+
+            a ^= value;
+
+            update_zero_and_negative_flags(a);
+
+            break;
+        }
+
         default:
         throw std::runtime_error("Unknown CPU opcode");
 
